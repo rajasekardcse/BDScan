@@ -44,7 +44,7 @@ pipeline {
                     // Verify the directory to be zipped exists and contains files
                     bat """
                         echo Checking contents of ${DOWNLOAD_DIRECTORY}
-                        dir "${DOWNLOAD_DIRECTORY}"
+                        
                         
                     """
 
