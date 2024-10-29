@@ -69,6 +69,11 @@ pipeline {
                     bat """
                         rename "${TEMP_ZIP_PATH}" "${FINAL_ZIP_NAME}"
                     """
+                    // Verify and output location after rename
+                    bat """
+                        echo Checking ZIP file location:
+                        dir "${env.WORKSPACE}"
+                    """
                 }
                 bat """
                     echo Current Directory after Packaging: %cd%
@@ -81,10 +86,11 @@ pipeline {
         stage('Archive ZIP as Artifact') {
             steps {
                 // Archive the final ZIP file in Jenkins as an artifact
-                archiveArtifacts artifacts: "${FINAL_ZIP_PATH}", allowEmptyArchive: false
+                archiveArtifacts artifacts: "${FINAL_ZIP_NAME}", allowEmptyArchive: false
                 bat """
                     echo Current Directory after Archive: %cd%
                     echo final zip path ${FINAL_ZIP_PATH}
+                    echo final zip path ${FINAL_ZIP_NAME}
                     dir "%cd%"
                 """
             }
