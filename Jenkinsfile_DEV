@@ -43,9 +43,8 @@ pipeline {
                 script {
                     // Verify the directory to be zipped exists and contains files
                     bat """
-                        cd ..
                         echo Checking contents of ${DOWNLOAD_DIRECTORY}
-                        dir "${DOWNLOAD_DIRECTORY}"
+
                     """
 
                     // Create initial ZIP file from downloaded directory
