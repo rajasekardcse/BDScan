@@ -89,8 +89,9 @@ pipeline {
                 archiveArtifacts artifacts: "${ApplicationName}/${FINAL_ZIP_NAME}", allowEmptyArchive: false
                 bat """
                     echo Current Directory after Archive: %cd%
-                    echo final zip path ${FINAL_ZIP_PATH}
-                    echo final zip path ${FINAL_ZIP_NAME}
+                    echo final zip path dir "${FINAL_ZIP_PATH}"
+                    echo final zip path dir "${FINAL_ZIP_NAME}"
+                    dir "${ApplicationName}"
                     dir "%cd%"
                 """
             }
