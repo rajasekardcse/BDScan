@@ -6,6 +6,7 @@ pipeline {
         DOWNLOAD_DIRECTORY = "${env.WORKSPACE}\\${ApplicationName}" // Directory for downloaded repo
         TEMP_ZIP_PATH = "${env.WORKSPACE}\\${ApplicationName}\\temp_package.zip" // Path for initial ZIP file
         FINAL_ZIP_NAME = "${ApplicationName}.23362.zip" // Final ZIP file name
+        FINAL_ZIP_PATH = "${env.WORKSPACE}\\${ApplicationName}\\${ApplicationName}.23362.zip"
         REMOTE_SERVER = "blackduck@blackduckfiles.ebiz.domain.com"
         REMOTE_PATH = ":"
         PASSWORD = "upload"
@@ -80,9 +81,10 @@ pipeline {
         stage('Archive ZIP as Artifact') {
             steps {
                 // Archive the final ZIP file in Jenkins as an artifact
-                archiveArtifacts artifacts: "${FINAL_ZIP_NAME}", allowEmptyArchive: false
+                archiveArtifacts artifacts: "${FINAL_ZIP_PATH}", allowEmptyArchive: false
                 bat """
                     echo Current Directory after Archive: %cd%
+                    echo final zip path ${FINAL_ZIP_PATH}
                     dir "%cd%"
                 """
             }
