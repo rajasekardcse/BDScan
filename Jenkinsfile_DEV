@@ -1,9 +1,10 @@
+// Current Working:-->edit1
 pipeline {
     agent any
 
     environment {
         DOWNLOAD_DIRECTORY = "${env.WORKSPACE}\\${ApplicationName}" // Directory for downloaded repo
-        TEMP_ZIP_PATH = "${env.WORKSPACE}\\temp_package.zip" // Path for initial ZIP file
+        TEMP_ZIP_PATH = "${env.WORKSPACE}\\${ApplicationName}\\temp_package.zip" // Path for initial ZIP file
         FINAL_ZIP_NAME = "${ApplicationName}.23362.zip" // Final ZIP file name
         REMOTE_SERVER = "blackduck@blackduckfiles.ebiz.domain.com"
         REMOTE_PATH = ":"
@@ -50,7 +51,7 @@ pipeline {
 
                     // Create initial ZIP file from downloaded directory
                     bat """
-                        powershell -Command "Compress-Archive -Path '${env.WORKSPACE}' -DestinationPath '${env.WORKSPACE}\\temp_package.zip'"
+                        powershell -Command "Compress-Archive -Path '${env.WORKSPACE}' -DestinationPath '${env.WORKSPACE}\\${ApplicationName}\\temp_package.zip'"
                     """
 
                     // Confirm ZIP file was created and has content
