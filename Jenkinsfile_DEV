@@ -80,7 +80,7 @@ pipeline {
         stage('Archive ZIP as Artifact') {
             steps {
                 // Archive the final ZIP file in Jenkins as an artifact
-                archiveArtifacts artifacts: "${env.WORKSPACE}\\${FINAL_ZIP_NAME}", allowEmptyArchive: false
+                archiveArtifacts artifacts: "${TEMP_ZIP_PATH}\\${FINAL_ZIP_NAME}", allowEmptyArchive: false
                 bat """
                     echo Current Directory after Archive: %cd%
                     dir "%cd%"
