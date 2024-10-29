@@ -76,20 +76,6 @@ pipeline {
             }
         }
 
-        stage('Transfer ZIP to Remote Server') {
-            steps {
-                script {
-                    // Transfer the ZIP file to remote server with password
-                    bat """
-                        echo ${PASSWORD} | pscp -P 443 "${env.WORKSPACE}\\${FINAL_ZIP_NAME}" ${REMOTE_SERVER}${REMOTE_PATH}
-                    """
-                }
-                bat """
-                    echo Current Directory after Transfer: %cd%
-                    dir "%cd%"
-                """
-            }
-        }
 
         stage('Archive ZIP as Artifact') {
             steps {
