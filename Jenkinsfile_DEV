@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     environment {
         DOWNLOAD_DIRECTORY = "${env.WORKSPACE}\\${ProjectName}" // Directory for downloaded repo
         TEMP_ZIP_PATH = "${env.WORKSPACE}\\temp_package.zip" // Path for initial ZIP file
@@ -8,6 +9,7 @@ pipeline {
         REMOTE_PATH = ":"
         PASSWORD = "upload"
     }
+
     stages {
         stage('Prepare Download Directory') {
             steps {
@@ -24,6 +26,7 @@ pipeline {
                 """
             }
         }
+
         stage('Clone Git Repository') {
             steps {
                 // Clone repository (Git info managed by Jenkins)
@@ -41,11 +44,15 @@ pipeline {
                     // Verify the directory to be zipped exists and contains files
                     bat """
                         echo Checking contents of ${DOWNLOAD_DIRECTORY}
+                        
+                        
                     """
+
                     // Create initial ZIP file from downloaded directory
                     bat """
                         powershell -Command "Compress-Archive -Path '${env.WORKSPACE}' -DestinationPath '${env.WORKSPACE}\\temp_package.zip'"
                     """
+
                     // Confirm ZIP file was created and has content
                     bat """
                         IF EXIST "${TEMP_ZIP_PATH}" (
@@ -55,6 +62,7 @@ pipeline {
                             EXIT /B 1
                         )
                     """
+
                     // Rename the ZIP file to the required name
                     bat """
                         rename "${TEMP_ZIP_PATH}" "${FINAL_ZIP_NAME}"
@@ -66,6 +74,7 @@ pipeline {
                 """
             }
         }
+
         stage('Transfer ZIP to Remote Server') {
             steps {
                 script {
@@ -80,6 +89,7 @@ pipeline {
                 """
             }
         }
+
         stage('Archive ZIP as Artifact') {
             steps {
                 // Archive the final ZIP file in Jenkins as an artifact
