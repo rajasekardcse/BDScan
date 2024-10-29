@@ -17,6 +17,7 @@ pipeline {
                     // Clear download directory if it already exists
                     bat """
                         IF EXIST "${DOWNLOAD_DIRECTORY}" (rmdir /S /Q "${DOWNLOAD_DIRECTORY}")
+                        mkdir "${DOWNLOAD_DIRECTORY}"
                     """
                 }
                 bat """
@@ -42,6 +43,7 @@ pipeline {
                 script {
                     // Verify the directory to be zipped exists and contains files
                     bat """
+                        cd ..
                         echo Checking contents of ${DOWNLOAD_DIRECTORY}
                         dir "${DOWNLOAD_DIRECTORY}"
                     """
