@@ -50,7 +50,7 @@ pipeline {
 
                     // Create initial ZIP file from downloaded directory
                     bat """
-                        powershell -Command "Compress-Archive -Path '${env.WORKSPACE}\\*' -DestinationPath '${env.WORKSPACE}\\temp_package.zip'"
+                        powershell -Command "Compress-Archive -Path '${env.WORKSPACE}' -DestinationPath '${env.WORKSPACE}\\temp_package.zip'"
                     """
 
                     // Confirm ZIP file was created and has content
