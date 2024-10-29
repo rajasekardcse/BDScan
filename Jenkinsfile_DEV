@@ -17,7 +17,7 @@ pipeline {
                     // Clear download directory if it already exists
                     bat """
                         IF EXIST "${DOWNLOAD_DIRECTORY}" (rmdir /S /Q "${DOWNLOAD_DIRECTORY}")
-                        mkdir "${DOWNLOAD_DIRECTORY}"
+                       // mkdir "${DOWNLOAD_DIRECTORY}"
                     """
                 }
                 bat """
