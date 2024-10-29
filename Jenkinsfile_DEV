@@ -1,0 +1,109 @@
+pipeline {
+    agent any
+
+    environment {
+        DOWNLOAD_DIRECTORY = "${env.WORKSPACE}\\bdscan" // Directory for downloaded repo
+        TEMP_ZIP_PATH = "${env.WORKSPACE}\\temp_package.zip" // Path for initial ZIP file
+        FINAL_ZIP_NAME = "ApplicationName.23362.zip" // Final ZIP file name
+        REMOTE_SERVER = "blackduck@blackduckfiles.ebiz.domain.com"
+        REMOTE_PATH = ":"
+        PASSWORD = "upload"
+    }
+
+    stages {
+        stage('Prepare Download Directory') {
+            steps {
+                script {
+                    // Clear download directory if it already exists
+                    bat """
+                        IF EXIST "${DOWNLOAD_DIRECTORY}" (rmdir /S /Q "${DOWNLOAD_DIRECTORY}")
+                        mkdir "${DOWNLOAD_DIRECTORY}"
+                    """
+                }
+                bat """
+                    echo Current Directory after Prepare: %cd%
+                    dir "%cd%"
+                """
+            }
+        }
+
+        stage('Clone Git Repository') {
+            steps {
+                // Clone repository (Git info managed by Jenkins)
+                checkout scm
+                bat """
+                    echo Current Directory after Clone: %cd%
+                    dir "%cd%"
+                """
+            }
+        }
+
+        stage('Package as ZIP') {
+            steps {
+                script {
+                    // Verify the directory to be zipped exists and contains files
+                    bat """
+                        echo Checking contents of ${DOWNLOAD_DIRECTORY}
+                        dir "${DOWNLOAD_DIRECTORY}"
+                    """
+
+                    // Create initial ZIP file from downloaded directory
+                    bat """
+                        powershell -Command "Compress-Archive -Path '${DOWNLOAD_DIRECTORY}\\*' -DestinationPath '${TEMP_ZIP_PATH}'"
+                    """
+
+                    // Confirm ZIP file was created and has content
+                    bat """
+                        IF EXIST "${TEMP_ZIP_PATH}" (
+                            echo ZIP file created successfully at ${TEMP_ZIP_PATH}
+                        ) ELSE (
+                            echo ERROR: ZIP file was not created. Exiting stage.
+                            EXIT /B 1
+                        )
+                    """
+
+                    // Rename the ZIP file to the required name
+                    bat """
+                        rename "${TEMP_ZIP_PATH}" "${FINAL_ZIP_NAME}"
+                    """
+                }
+                bat """
+                    echo Current Directory after Packaging: %cd%
+                    dir "%cd%"
+                """
+            }
+        }
+
+        stage('Transfer ZIP to Remote Server') {
+            steps {
+                script {
+                    // Transfer the ZIP file to remote server with password
+                    bat """
+                        echo ${PASSWORD} | pscp -P 443 "${env.WORKSPACE}\\${FINAL_ZIP_NAME}" ${REMOTE_SERVER}${REMOTE_PATH}
+                    """
+                }
+                bat """
+                    echo Current Directory after Transfer: %cd%
+                    dir "%cd%"
+                """
+            }
+        }
+
+        stage('Archive ZIP as Artifact') {
+            steps {
+                // Archive the final ZIP file in Jenkins as an artifact
+                archiveArtifacts artifacts: "${env.WORKSPACE}\\${FINAL_ZIP_NAME}", allowEmptyArchive: false
+                bat """
+                    echo Current Directory after Archive: %cd%
+                    dir "%cd%"
+                """
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Download, packaging, transfer, and archive completed."
+        }
+    }
+}
