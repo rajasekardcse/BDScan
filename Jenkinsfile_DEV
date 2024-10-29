@@ -45,6 +45,10 @@ pipeline {
                     bat """
                         echo Checking contents of ${DOWNLOAD_DIRECTORY}
                         dir "${DOWNLOAD_DIRECTORY}"
+                        $SourcePath = "${env.WORKSPACE}\*"  # Path to the repo files
+                        $DestinationPath = "${env.WORKSPACE}\temp_package.zip"  # Path for the ZIP file
+
+                        Compress-Archive -Path $SourcePath -DestinationPath $DestinationPath
                     """
 
                     // Create initial ZIP file from downloaded directory
