@@ -86,7 +86,7 @@ pipeline {
         stage('Archive ZIP as Artifact') {
             steps {
                 // Archive the final ZIP file in Jenkins as an artifact
-                archiveArtifacts artifacts: "BDScan/${FINAL_ZIP_NAME}", allowEmptyArchive: false
+                archiveArtifacts artifacts: "${ApplicationName}/${FINAL_ZIP_NAME}", allowEmptyArchive: false
                 bat """
                     echo Current Directory after Archive: %cd%
                     echo final zip path ${FINAL_ZIP_PATH}
